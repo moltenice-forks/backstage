@@ -38,7 +38,7 @@ import {
   EntitiesCatalog,
   LocationsCatalog,
 } from '../catalog';
-import { CommonDatabase } from '../database/CommonDatabase';
+import { CommonDatabase } from '../database';
 import {
   AnnotateLocationEntityProcessor,
   BitbucketDiscoveryProcessor,
@@ -246,7 +246,7 @@ export class NextCatalogBuilder {
     await dbClient.migrate.latest({
       directory: resolvePackagePath(
         '@backstage/plugin-catalog-backend',
-        'migrationsv2',
+        'migrations',
       ),
     });
 

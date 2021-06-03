@@ -33,45 +33,44 @@ export default async function createPlugin(
    * DO NOT enable the experimental catalog, it will brick your database migrations.
    * This is solely for internal backstage development.
    */
-  if (process.env.EXPERIMENTAL_CATALOG === '1') {
-    const builder = new NextCatalogBuilder(env);
+  if (process.env.LEGACY_CATALOG === '1') {
+    const builder = new CatalogBuilder(env);
     const {
       entitiesCatalog,
+      locationsCatalog,
+      higherOrderOperation,
       locationAnalyzer,
-      processingEngine,
-      locationService,
     } = await builder.build();
 
-    // TODO(jhaals): run and manage in background.
-    await processingEngine.start();
+    useHotCleanup(
+      module,
+      runPeriodically(() => higherOrderOperation.refreshAllLocations(), 100000),
+    );
 
-    return await createNextRouter({
+    return await createRouter({
       entitiesCatalog,
+      locationsCatalog,
+      higherOrderOperation,
       locationAnalyzer,
-      locationService,
       logger: env.logger,
       config: env.config,
     });
   }
-
-  const builder = new CatalogBuilder(env);
+  const builder = new NextCatalogBuilder(env);
   const {
     entitiesCatalog,
-    locationsCatalog,
-    higherOrderOperation,
     locationAnalyzer,
+    processingEngine,
+    locationService,
   } = await builder.build();
 
-  useHotCleanup(
-    module,
-    runPeriodically(() => higherOrderOperation.refreshAllLocations(), 100000),
-  );
+  // TODO(jhaals): run and manage in background.
+  await processingEngine.start();
 
-  return await createRouter({
+  return await createNextRouter({
     entitiesCatalog,
-    locationsCatalog,
-    higherOrderOperation,
     locationAnalyzer,
+    locationService,
     logger: env.logger,
     config: env.config,
   });
