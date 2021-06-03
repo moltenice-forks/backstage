@@ -1,5 +1,14 @@
 # @backstage/test-utils
 
+## 0.1.13
+
+### Patch Changes
+
+- 7af9cef07: Fix a bug in `MockStorageApi` where it unhelpfully returned new empty buckets every single time
+- e7c5e4b30: Update installation instructions in README.
+- Updated dependencies [e7c5e4b30]
+  - @backstage/theme@0.2.8
+
 ## 0.1.12
 
 ### Patch Changes
